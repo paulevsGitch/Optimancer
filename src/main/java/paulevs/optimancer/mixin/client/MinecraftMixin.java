@@ -1,10 +1,7 @@
 package paulevs.optimancer.mixin.client;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.InGame;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ScreenshotManager;
 import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
