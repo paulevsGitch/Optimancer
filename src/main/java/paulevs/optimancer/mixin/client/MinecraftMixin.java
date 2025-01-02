@@ -42,7 +42,7 @@ public class MinecraftMixin {
 	
 	/**
 	 * @author paulevs
-	 * @reason Optimise screenshot-checking code
+	 * @reason Optimise screenshot-checking code.
 	 */
 	@Overwrite
 	private void checkTakingScreenshot() {
