@@ -5,7 +5,6 @@ import net.minecraft.client.gui.InGame;
 import net.minecraft.client.util.ScreenshotManager;
 import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
@@ -45,12 +44,9 @@ public class MinecraftMixin {
 		ThreadManager.tickClient(Minecraft.class.cast(this));
 	}
 	
-	/**
-	 * @author paulevs
-	 * @reason Optimise screenshot-checking code.
-	 */
-	@Overwrite
-	private void checkTakingScreenshot() {
+	@Inject(method = "checkTakingScreenshot", at = @At("HEAD"), cancellable = true)
+	private void optimancer_checkTakingScreenshot(CallbackInfo info) {
+		info.cancel();
 		String message = ScreenshotThread.getMessage();
 		if (message != null) overlay.addChatMessage(message);
 		

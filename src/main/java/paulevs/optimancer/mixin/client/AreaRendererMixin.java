@@ -12,24 +12,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class AreaRendererMixin {
 	@Shadow public boolean canUpdate;
 	@Shadow public boolean isVisible;
-	@Shadow public Box box;
 	
 	@Inject(method = "update", at = @At("HEAD"), cancellable = true)
 	private void optimancer_disableInvisibleUpdate(CallbackInfo info) {
 		if (!this.isVisible) info.cancel();
 	}
 	
-	@Inject(method = "update", at = @At("TAIL"), cancellable = true)
+	@Inject(method = "update", at = @At("TAIL"))
 	private void optimancer_disableUpdate(CallbackInfo info) {
 		canUpdate = false;
 	}
-	
-	/**
-	 * @author paulevs
-	 * @reason Changes default check with frustum culling.
-	 */
-	/*@Overwrite
-	public void checkVisibility(BoxCollider collider) {
-		isVisible = FrustumHelper.isAreaVisible(box);
-	}*/
 }

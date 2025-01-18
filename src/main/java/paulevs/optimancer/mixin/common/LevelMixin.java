@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import paulevs.optimancer.util.ConcurrentFIFOQueue;
 import paulevs.optimancer.world.OptimancerLevel;
 
@@ -24,6 +25,11 @@ public class LevelMixin implements OptimancerLevel {
 	@Inject(method = "processLevel", at = @At("HEAD"))
 	private void optimancer_changeSaveRate(CallbackInfo info) {
 		saveTicks = 1200;
+	}
+	
+	@Inject(method = "updateLight()Z", at = @At("HEAD"), cancellable = true)
+	private void optimancer_disableLightUpdates(CallbackInfoReturnable<Boolean> info) {
+		info.setReturnValue(false);
 	}
 	
 	@Inject(method = "updateLight(Lnet/minecraft/level/LightType;IIIIIIZ)V", at = @At("HEAD"), cancellable = true)
