@@ -10,4 +10,9 @@ import org.spongepowered.asm.mixin.injection.At;
 public class GameRendererMixin {
 	@WrapOperation(method = "renderScreen", at = @At(value = "INVOKE", target = "Ljava/lang/Thread;sleep(J)V"))
 	private void optimancer_disableThreadSleep(long time, Operation<Void> original) {}
+	
+	/*@ModifyConstant(method = "delta", constant = @Constant(longValue = 1000000000L))
+	private long optimancer_changeMaxChunkUpdateTime(long original) {
+		return 10000000000L;
+	}*/
 }
