@@ -6,4 +6,5 @@ Optimisation mod for StAPI and Minecraft beta 1.7.3
 - Moved screenshot saving to a separate thread
 - Particle culling
 - Entity culling
+- Fog chunks culling
 - Multithreaded light updates

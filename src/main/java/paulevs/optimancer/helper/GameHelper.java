@@ -9,7 +9,7 @@ import net.minecraft.server.MinecraftServer;
 public class GameHelper {
 	@Environment(EnvType.CLIENT)
 	@SuppressWarnings("deprecation")
-	public static Minecraft getMinecraft() {
+	public static Minecraft getClient() {
 		return (Minecraft) FabricLoader.getInstance().getGameInstance();
 	}
 	
