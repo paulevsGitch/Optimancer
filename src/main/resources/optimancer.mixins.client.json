@@ -6,6 +6,8 @@
 	"client": [
 		"ScreenshotManagerMixin",
 		"ParticleManagerMixin",
+		"LevelRendererMixin",
+		"AreaRendererMixin",
 		"MinecraftMixin",
 		"EntityMixin"
 	],

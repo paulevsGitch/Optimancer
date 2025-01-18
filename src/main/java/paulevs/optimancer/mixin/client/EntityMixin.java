@@ -17,13 +17,6 @@ public class EntityMixin {
 	
 	@Inject(method = "canRenderFrom", at = @At("HEAD"), cancellable = true)
 	private void optimancer_cullEntity(Vec3D pos, CallbackInfoReturnable<Boolean> info) {
-		if (!FrustumHelper.isAreaVisible(
-			boundingBox.minX,
-			boundingBox.minY,
-			boundingBox.minZ,
-			boundingBox.maxX,
-			boundingBox.maxY,
-			boundingBox.maxZ
-		)) info.setReturnValue(false);
+		if (!FrustumHelper.isAreaVisible(boundingBox)) info.setReturnValue(false);
 	}
 }

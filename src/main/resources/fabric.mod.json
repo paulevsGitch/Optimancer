@@ -30,5 +30,11 @@
 		"stationapi": ">=2.0-alpha.3"
 	},
 	
-	"custom": {}
+	"custom": {
+		"loom:injected_interfaces": {
+			"net/minecraft/class_18": [
+				"paulevs/optimancer/world/OptimancerLevel"
+			]
+		}
+	}
 }

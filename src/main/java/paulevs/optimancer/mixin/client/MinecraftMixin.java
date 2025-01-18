@@ -40,6 +40,11 @@ public class MinecraftMixin {
 		ThreadManager.stop();
 	}
 	
+	@Inject(method = "tick", at = @At("HEAD"))
+	private void optimancer_tickClient(CallbackInfo info) {
+		ThreadManager.tickClient(Minecraft.class.cast(this));
+	}
+	
 	/**
 	 * @author paulevs
 	 * @reason Optimise screenshot-checking code.
@@ -56,16 +61,4 @@ public class MinecraftMixin {
 		}
 		else isTakingScreenshot = false;
 	}
-	
-	/*@WrapOperation(method = {
-		"method_2131",
-		"createOrLoadLevel",
-		"showLevelProgress",
-		"stop"
-	}, at = @At(
-		value = "INVOKE",
-		target = "Ljava/lang/System;gc()V",
-		remap = false
-	))
-	private void optimancer_disableGC(Operation<Void> original) {}*/
 }
