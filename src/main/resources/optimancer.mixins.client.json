@@ -5,11 +5,13 @@
 	"compatibilityLevel": "JAVA_17",
 	"client": [
 		"MinecraftTimeHackThreadMixin",
+		"MultiplayerChunkCacheMixin",
 		"ScreenshotManagerMixin",
 		"ParticleManagerMixin",
 		"LevelRendererMixin",
 		"AreaRendererMixin",
 		"GameRendererMixin",
+		"ChunkCacheMixin",
 		"MinecraftMixin",
 		"EntityMixin"
 	],

@@ -22,7 +22,8 @@
 	"entrypoints": {},
 	"mixins": [
 		"optimancer.mixins.client.json",
-		"optimancer.mixins.common.json"
+		"optimancer.mixins.common.json",
+		"optimancer.mixins.server.json"
 	],
 
 	"depends": {
@@ -34,6 +35,9 @@
 		"loom:injected_interfaces": {
 			"net/minecraft/class_18": [
 				"paulevs/optimancer/world/OptimancerLevel"
+			],
+			"net/minecraft/class_51": [
+				"paulevs/optimancer/world/OptimancerLevelSource"
 			]
 		}
 	}

@@ -61,4 +61,14 @@ public class LevelRendererMixin {
 	private void optimancer_customUpdates(LivingEntity entity, boolean useDistanceLimit, CallbackInfoReturnable<Boolean> info) {
 		info.setReturnValue(false);
 	}*/
+	
+	@Inject(method = "updateAreasAround", at = @At("HEAD"), cancellable = true)
+	private void optimancer_entityNullCheck1(LivingEntity entity, boolean useLimit, CallbackInfoReturnable<Boolean> info) {
+		if (entity == null) info.setReturnValue(false);
+	}
+	
+	@Inject(method = "playSound", at = @At("HEAD"), cancellable = true)
+	private void optimancer_entityNullCheck2(String sound, double x, double y, double z, float volume, float pitch, CallbackInfo info) {
+		if (minecraft.viewEntity == null) info.cancel();
+	}
 }

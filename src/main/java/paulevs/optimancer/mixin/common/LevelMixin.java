@@ -1,5 +1,8 @@
 package paulevs.optimancer.mixin.common;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.level.Level;
 import net.minecraft.level.LightType;
 import net.minecraft.level.LightUpdateArea;
@@ -15,12 +18,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import paulevs.optimancer.util.ConcurrentFIFOQueue;
 import paulevs.optimancer.world.OptimancerLevel;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 @Mixin(Level.class)
 public class LevelMixin implements OptimancerLevel {
 	@Unique private final ConcurrentFIFOQueue<LightUpdateArea> optimancer_lightUpdateQueue = new ConcurrentFIFOQueue<>();
 	
 	@Shadow @Final public Dimension dimension;
 	@Shadow protected int saveTicks;
+	
+	@Shadow private TreeSet treeSet;
 	
 	@Inject(method = "processLevel", at = @At("HEAD"))
 	private void optimancer_changeSaveRate(CallbackInfo info) {
@@ -47,5 +55,11 @@ public class LevelMixin implements OptimancerLevel {
 			LightUpdateArea area = optimancer_lightUpdateQueue.get();
 			area.process(level);
 		}
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@WrapOperation(method = "processBlockTicks", at = @At(value = "INVOKE", target = "Ljava/util/Set;size()I"))
+	private int optimancer_changeSize(Set set, Operation<Integer> original, @Local int lastSize) {
+		return lastSize;
 	}
 }

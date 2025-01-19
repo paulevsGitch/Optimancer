@@ -62,5 +62,6 @@ public class OptimancerLevelRenderer {
 			GL11.glDisable(GL11.GL_BLEND);
 		}
 		GL11.glPopMatrix();
+		GL11.glDepthMask(true);
 	}
 }
