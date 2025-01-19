@@ -1,6 +1,5 @@
 package paulevs.optimancer.mixin.common;
 
-import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
 import net.minecraft.level.Level;
 import net.minecraft.level.chunk.Chunk;
 import net.minecraft.level.chunk.ChunkIO;
@@ -15,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import paulevs.optimancer.util.ConcurrentInt2ReferenceMap;
 import paulevs.optimancer.world.NullChunk;
 import paulevs.optimancer.world.OptimancerLevelSource;
 
@@ -37,7 +37,7 @@ public abstract class ServerChunkCacheMixin implements OptimancerLevelSource {
 	
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void optimancer_isChunkLoaded(Level level, ChunkIO io, LevelSource chunkGenerator, CallbackInfo info) {
-		serverChunkCache = new Int2ReferenceOpenHashMap<Chunk>();
+		serverChunkCache = new ConcurrentInt2ReferenceMap<Chunk>();
 	}
 	
 	@Override
@@ -101,7 +101,7 @@ public abstract class ServerChunkCacheMixin implements OptimancerLevelSource {
 	
 	@Unique
 	@SuppressWarnings("unchecked")
-	private Int2ReferenceOpenHashMap<Chunk> optimancer_getStorage() {
-		return (Int2ReferenceOpenHashMap<Chunk>) serverChunkCache;
+	private ConcurrentInt2ReferenceMap<Chunk> optimancer_getStorage() {
+		return (ConcurrentInt2ReferenceMap<Chunk>) serverChunkCache;
 	}
 }

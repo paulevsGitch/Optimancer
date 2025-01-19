@@ -1,7 +1,6 @@
 package paulevs.optimancer.mixin.client;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import net.minecraft.level.Level;
 import net.minecraft.level.chunk.Chunk;
 import net.minecraft.level.chunk.MultiplayerChunkCache;
@@ -17,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import paulevs.optimancer.helper.OptimancerMathHelper;
+import paulevs.optimancer.util.ConcurrentLong2ReferenceMap;
 import paulevs.optimancer.world.NullChunk;
 import paulevs.optimancer.world.OptimancerLevelSource;
 
@@ -27,12 +27,13 @@ import java.util.Map;
 public abstract class MultiplayerChunkCacheMixin implements OptimancerLevelSource {
 	@SuppressWarnings("rawtypes")
 	@Shadow private Map multiplayerChunkCache;
+	@SuppressWarnings("rawtypes")
 	@Shadow private List chunkList;
 	@Shadow private Level level;
 	
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void optimancer_isChunkLoaded(Level level, CallbackInfo info) {
-		multiplayerChunkCache = new Long2ReferenceOpenHashMap<Chunk>();
+		multiplayerChunkCache = new ConcurrentLong2ReferenceMap<Chunk>();
 		chunkList = null;
 	}
 	
@@ -82,7 +83,7 @@ public abstract class MultiplayerChunkCacheMixin implements OptimancerLevelSourc
 	
 	@Unique
 	@SuppressWarnings("unchecked")
-	private Long2ReferenceOpenHashMap<Chunk> optimancer_getStorage() {
-		return (Long2ReferenceOpenHashMap<Chunk>) multiplayerChunkCache;
+	private ConcurrentLong2ReferenceMap<Chunk> optimancer_getStorage() {
+		return (ConcurrentLong2ReferenceMap<Chunk>) multiplayerChunkCache;
 	}
 }

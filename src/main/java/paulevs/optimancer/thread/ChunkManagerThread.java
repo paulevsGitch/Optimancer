@@ -14,6 +14,7 @@ import paulevs.optimancer.helper.OptimancerMathHelper;
 import paulevs.optimancer.mixin.common.DimensionDataHandlerAccessor;
 import paulevs.optimancer.util.ConcurrentFIFOQueue;
 import paulevs.optimancer.util.ConcurrentLongQueue;
+import paulevs.optimancer.util.ConcurrentLongSet;
 import paulevs.optimancer.world.NullChunk;
 
 import java.io.DataInputStream;
@@ -27,6 +28,7 @@ public class ChunkManagerThread extends OptimancerThread {
 	private final ConcurrentFIFOQueue<FlattenedChunk> chunksToSave = new ConcurrentFIFOQueue<>();
 	private final ConcurrentFIFOQueue<FlattenedChunk> chunksToInsert = new ConcurrentFIFOQueue<>();
 	private final ConcurrentLongQueue chunksToLoad = new ConcurrentLongQueue();
+	private final ConcurrentLongSet loadingChunks = new ConcurrentLongSet();
 	private final File dimFolder;
 	private final Level level;
 	
@@ -71,6 +73,7 @@ public class ChunkManagerThread extends OptimancerThread {
 		count = Math.min(chunksToLoad.size(), 64);
 		for (int i = 0; i < count; i++) {
 			long index = chunksToLoad.get();
+			
 			int x = OptimancerMathHelper.getX(index);
 			int z = OptimancerMathHelper.getZ(index);
 			
@@ -84,6 +87,7 @@ public class ChunkManagerThread extends OptimancerThread {
 			if (!tag.containsKey("Level")) {
 				Optimancer.LOGGER.error("Chunk file at " + x + "," + z + " is missing level data, skipping");
 				chunksToInsert.add(new NullChunk(level, x, z));
+				loadingChunks.remove(index);
 				continue;
 			}
 			
@@ -91,6 +95,7 @@ public class ChunkManagerThread extends OptimancerThread {
 			if (!tag.getCompoundTag("Level").containsKey(SECTIONS)) {
 				Optimancer.LOGGER.error("Chunk file at " + x + "," + z + " is missing section data, skipping");
 				chunksToInsert.add(new NullChunk(level, x, z));
+				loadingChunks.remove(index);
 				continue;
 			}
 			
@@ -104,6 +109,7 @@ public class ChunkManagerThread extends OptimancerThread {
 			chunk.setBlockMask();
 			
 			chunksToInsert.add(chunk);
+			loadingChunks.remove(index);
 		}
 	}
 	
@@ -120,8 +126,12 @@ public class ChunkManagerThread extends OptimancerThread {
 	}
 	
 	public FlattenedChunk loadChunk(int x, int z) {
-		chunksToLoad.add(OptimancerMathHelper.pack(x, z));
-		FlattenedChunk chunk = new FlattenedChunk(level, x, z);
+		long index = OptimancerMathHelper.pack(x, z);
+		if (!loadingChunks.contains(index)) {
+			loadingChunks.add(index);
+			chunksToLoad.add(index);
+		}
+		NullChunk chunk = new NullChunk(level, x, z);
 		chunk.decorated = true;
 		return chunk;
 	}
