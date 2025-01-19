@@ -1,5 +1,7 @@
 package paulevs.optimancer.mixin.client;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.InGame;
 import net.minecraft.client.util.ScreenshotManager;
@@ -57,4 +59,7 @@ public class MinecraftMixin {
 		}
 		else isTakingScreenshot = false;
 	}
+	
+	@WrapOperation(method = "run", at = @At(value = "INVOKE", target = "Ljava/lang/Thread;sleep(J)V", remap = false), remap = false)
+	private void optimancer_disableThreadSleep(long time, Operation<Void> original) {}
 }

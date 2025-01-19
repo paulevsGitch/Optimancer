@@ -16,6 +16,7 @@ import paulevs.optimancer.util.ConcurrentFIFOQueue;
 import paulevs.optimancer.util.ConcurrentLongQueue;
 import paulevs.optimancer.util.ConcurrentLongSet;
 import paulevs.optimancer.world.NullChunk;
+import paulevs.optimancer.world.PromiseChunk;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -113,6 +114,34 @@ public class ChunkManagerThread extends OptimancerThread {
 		}
 	}
 	
+	@Override
+	protected void onFinish() {
+		int count = chunksToSave.size();
+		for (int i = 0; i < count; i++) {
+			FlattenedChunk chunk = chunksToSave.get();
+			level.checkSessionLock();
+			DataOutputStream stream = RegionLoader.getOutputStream(dimFolder, chunk.x, chunk.z);
+			CompoundTag rootTag = new CompoundTag();
+			CompoundTag levelTag = new CompoundTag();
+			rootTag.put("Level", levelTag);
+			FlattenedWorldManager.saveChunk(chunk, level, levelTag);
+			rootTag = NbtHelper.addDataVersions(rootTag);
+			NBTIO.writeTag(rootTag, stream);
+			
+			try {
+				stream.close();
+			}
+			catch (IOException e) {
+				//noinspection CallToPrintStackTrace
+				e.printStackTrace();
+			}
+			
+			LevelProperties properties = level.getProperties();
+			int delta = RegionLoader.getSizeDelta(dimFolder, chunk.x, chunk.z);
+			properties.setSizeOnDisk(properties.getSizeOnDisk() + delta);
+		}
+	}
+	
 	public void processMain() {
 		int count = Math.min(chunksToInsert.size(), 64);
 		for (int i = 0; i < count; i++) {
@@ -131,8 +160,6 @@ public class ChunkManagerThread extends OptimancerThread {
 			loadingChunks.add(index);
 			chunksToLoad.add(index);
 		}
-		NullChunk chunk = new NullChunk(level, x, z);
-		chunk.decorated = true;
-		return chunk;
+		return new PromiseChunk(level, x, z);
 	}
 }

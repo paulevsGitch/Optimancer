@@ -8,4 +8,4 @@ Optimisation mod for StAPI and Minecraft beta 1.7.3
 - Entity culling
 - Fog chunks culling
 - Multithreaded light updates
-- Multithreaded chunk saving
+- Multithreaded chunk saving and loading

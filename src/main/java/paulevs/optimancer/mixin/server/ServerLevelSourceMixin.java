@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import paulevs.optimancer.world.NullChunk;
 import paulevs.optimancer.world.OptimancerLevelSource;
+import paulevs.optimancer.world.PromiseChunk;
 
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,6 @@ public abstract class ServerLevelSourceMixin implements OptimancerLevelSource {
 	@SuppressWarnings("rawtypes")
 	@Shadow private Map chunks;
 	
-	@Shadow public abstract boolean isChunkLoaded(int chunkX, int chunkZ);
 	@Shadow public abstract Chunk getChunk(int chunkX, int chunkZ);
 	@Shadow public abstract void decorate(LevelSource levelSource, int chunkX, int chunkZ);
 	
@@ -55,31 +55,42 @@ public abstract class ServerLevelSourceMixin implements OptimancerLevelSource {
 			
 			ServerLevelSource source = ServerLevelSource.class.cast(this);
 			
-			if (!newChunk.decorated && isChunkLoaded(chunk.x + 1, chunk.z + 1) && isChunkLoaded(chunk.x, chunk.z + 1) && isChunkLoaded(chunk.x + 1, chunk.z)) {
+			if (
+				!newChunk.decorated &&
+				optimancer_isLoadedAndNotPromise(chunk.x + 1, chunk.z + 1) &&
+				optimancer_isLoadedAndNotPromise(chunk.x, chunk.z + 1) &&
+				optimancer_isLoadedAndNotPromise(chunk.x + 1, chunk.z)
+			) {
 				decorate(source, chunk.x, chunk.z);
 			}
 			
-			if (isChunkLoaded(chunk.x - 1, chunk.z)
-				&& !getChunk(chunk.x - 1, chunk.z).decorated
-				&& isChunkLoaded(chunk.x - 1, chunk.z + 1)
-				&& isChunkLoaded(chunk.x, chunk.z + 1)
-				&& isChunkLoaded(chunk.x - 1, chunk.z)) {
+			if (
+				optimancer_isLoadedAndNotPromise(chunk.x - 1, chunk.z) &&
+				!getChunk(chunk.x - 1, chunk.z).decorated &&
+				optimancer_isLoadedAndNotPromise(chunk.x - 1, chunk.z + 1) &&
+				optimancer_isLoadedAndNotPromise(chunk.x, chunk.z + 1) &&
+				optimancer_isLoadedAndNotPromise(chunk.x - 1, chunk.z)
+			) {
 				decorate(source, chunk.x - 1, chunk.z);
 			}
 			
-			if (isChunkLoaded(chunk.x, chunk.z - 1)
-				&& !getChunk(chunk.x, chunk.z - 1).decorated
-				&& isChunkLoaded(chunk.x + 1, chunk.z - 1)
-				&& isChunkLoaded(chunk.x, chunk.z - 1)
-				&& isChunkLoaded(chunk.x + 1, chunk.z)) {
+			if (
+				optimancer_isLoadedAndNotPromise(chunk.x, chunk.z - 1) &&
+				!getChunk(chunk.x, chunk.z - 1).decorated &&
+				optimancer_isLoadedAndNotPromise(chunk.x + 1, chunk.z - 1) &&
+				optimancer_isLoadedAndNotPromise(chunk.x, chunk.z - 1) &&
+				optimancer_isLoadedAndNotPromise(chunk.x + 1, chunk.z)
+			) {
 				decorate(source, chunk.x, chunk.z - 1);
 			}
 			
-			if (isChunkLoaded(chunk.x - 1, chunk.z - 1)
-				&& !getChunk(chunk.x - 1, chunk.z - 1).decorated
-				&& isChunkLoaded(chunk.x - 1, chunk.z - 1)
-				&& isChunkLoaded(chunk.x, chunk.z - 1)
-				&& isChunkLoaded(chunk.x - 1, chunk.z)) {
+			if (
+				optimancer_isLoadedAndNotPromise(chunk.x - 1, chunk.z - 1) &&
+				!getChunk(chunk.x - 1, chunk.z - 1).decorated &&
+				optimancer_isLoadedAndNotPromise(chunk.x - 1, chunk.z - 1) &&
+				optimancer_isLoadedAndNotPromise(chunk.x, chunk.z - 1) &&
+				optimancer_isLoadedAndNotPromise(chunk.x - 1, chunk.z)
+			) {
 				decorate(source, chunk.x - 1, chunk.z - 1);
 			}
 		}
@@ -99,5 +110,12 @@ public abstract class ServerLevelSourceMixin implements OptimancerLevelSource {
 	@SuppressWarnings("unchecked")
 	private Int2ReferenceOpenHashMap<Chunk> optimancer_getStorage() {
 		return (Int2ReferenceOpenHashMap<Chunk>) chunks;
+	}
+	
+	@Unique
+	private boolean optimancer_isLoadedAndNotPromise(int x, int z) {
+		int index = Vec2I.hash(x, z);
+		Chunk chunk = optimancer_getStorage().get(index);
+		return chunk != null && !(chunk instanceof PromiseChunk);
 	}
 }
