@@ -31,7 +31,7 @@ public class AreaRendererMixin {
 		if (!this.isVisible) info.cancel();
 	}
 	
-	@Inject(method = "update", at = @At(value = "INVOKE", target = "Ljava/util/List;removeAll(Ljava/util/Collection;)Z"))
+	@Inject(method = "update", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/AreaRenderer;startX:I", ordinal = 0))
 	private void optimancer_disableUpdate(CallbackInfo info) {
 		canUpdate = false;
 	}
