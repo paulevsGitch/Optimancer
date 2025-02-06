@@ -1,4 +1,4 @@
-package paulevs.optimancer.helper;
+package paulevs.optimancer.world;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.io.CompoundTag;

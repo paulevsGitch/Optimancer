@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import paulevs.optimancer.util.ConcurrentInt2ReferenceMap;
+import paulevs.optimancer.collection.ConcurrentInt2ReferenceMap;
 import paulevs.optimancer.world.NullChunk;
 import paulevs.optimancer.world.OptimancerLevelSource;
 import paulevs.optimancer.world.PromiseChunk;

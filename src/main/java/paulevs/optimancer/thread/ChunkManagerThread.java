@@ -10,11 +10,11 @@ import net.modificationstation.stationapi.api.nbt.NbtHelper;
 import net.modificationstation.stationapi.impl.world.FlattenedWorldManager;
 import net.modificationstation.stationapi.impl.world.chunk.FlattenedChunk;
 import paulevs.optimancer.Optimancer;
+import paulevs.optimancer.collection.ConcurrentFIFOQueue;
+import paulevs.optimancer.collection.ConcurrentLongQueue;
+import paulevs.optimancer.collection.ConcurrentLongSet;
 import paulevs.optimancer.helper.OptimancerMathHelper;
 import paulevs.optimancer.mixin.common.DimensionDataHandlerAccessor;
-import paulevs.optimancer.util.ConcurrentFIFOQueue;
-import paulevs.optimancer.util.ConcurrentLongQueue;
-import paulevs.optimancer.util.ConcurrentLongSet;
 import paulevs.optimancer.world.NullChunk;
 import paulevs.optimancer.world.PromiseChunk;
 
@@ -26,9 +26,9 @@ import java.io.IOException;
 import static net.modificationstation.stationapi.impl.world.FlattenedWorldManager.SECTIONS;
 
 public class ChunkManagerThread extends OptimancerThread {
-	private final ConcurrentFIFOQueue<FlattenedChunk> chunksToSave = new ConcurrentFIFOQueue<>();
-	private final ConcurrentFIFOQueue<FlattenedChunk> chunksToInsert = new ConcurrentFIFOQueue<>();
-	private final ConcurrentLongQueue chunksToLoad = new ConcurrentLongQueue();
+	private final ConcurrentFIFOQueue<FlattenedChunk> chunksToSave = new ConcurrentFIFOQueue<>(512);
+	private final ConcurrentFIFOQueue<FlattenedChunk> chunksToInsert = new ConcurrentFIFOQueue<>(512);
+	private final ConcurrentLongQueue chunksToLoad = new ConcurrentLongQueue(512);
 	private final ConcurrentLongSet loadingChunks = new ConcurrentLongSet();
 	private final File dimFolder;
 	private final Level level;
@@ -41,7 +41,6 @@ public class ChunkManagerThread extends OptimancerThread {
 		if (level.dimension.id != 0) root = new File(root, "DIM" + id);
 		this.dimFolder = root;
 		this.level = level;
-		System.out.println("Folder " + dimFolder);
 	}
 	
 	@Override

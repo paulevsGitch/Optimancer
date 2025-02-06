@@ -11,10 +11,9 @@ import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import paulevs.optimancer.helper.GameHelper;
 import paulevs.optimancer.thread.ChunkManagerThread;
 import paulevs.optimancer.thread.ThreadManager;
-import paulevs.optimancer.world.NullChunk;
-import paulevs.optimancer.world.PromiseChunk;
 
 @Mixin(value = FlattenedWorldChunkLoader.class, remap = false)
 public abstract class FlattenedWorldChunkLoaderMixin implements ChunkIO {
@@ -24,7 +23,7 @@ public abstract class FlattenedWorldChunkLoaderMixin implements ChunkIO {
 		shift = Shift.AFTER
 	), cancellable = true, remap = true)
 	private void optimancer_saveChunk(Level level, Chunk chunk, CallbackInfo info) {
-		if (chunk instanceof NullChunk || chunk instanceof PromiseChunk) {
+		if (GameHelper.isInvalidChunk(chunk)) {
 			info.cancel();
 			return;
 		}

@@ -1,4 +1,4 @@
-package paulevs.optimancer.util;
+package paulevs.optimancer.collection;
 
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;

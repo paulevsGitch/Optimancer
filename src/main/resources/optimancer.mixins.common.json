@@ -6,10 +6,12 @@
 	"mixins": [
 		"FlattenedWorldChunkLoaderMixin",
 		"DimensionDataHandlerAccessor",
+		"LevelMonsterSpawnerMixin",
 		"ServerChunkCacheMixin",
 		"LevelSourceMixin",
 		"LevelAccessor",
-		"LevelMixin"
+		"LevelMixin",
+		"Vec3DMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

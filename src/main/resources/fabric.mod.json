@@ -25,6 +25,7 @@
 		"optimancer.mixins.common.json",
 		"optimancer.mixins.server.json"
 	],
+	"accessWidener" : "optimancer.accesswidener",
 
 	"depends": {
 		"minecraft": "1.0.0-beta.7.3",

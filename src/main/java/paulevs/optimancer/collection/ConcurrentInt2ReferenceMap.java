@@ -1,4 +1,4 @@
-package paulevs.optimancer.util;
+package paulevs.optimancer.collection;
 
 import it.unimi.dsi.fastutil.ints.Int2ReferenceMap;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;

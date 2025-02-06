@@ -1,0 +1,4 @@
+accessWidener	v2	named
+
+# Methods
+extendable	method 	net/minecraft/client/render/Tessellator	<init>	(I)V
